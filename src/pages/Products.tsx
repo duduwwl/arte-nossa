@@ -77,8 +77,8 @@ export function Products() {
           </div>
         </form>
 
-        <div className="-mx-4 mt-5 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0" role="group" aria-label="Filtrar por categoria">
-          <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap">
+        <div className="mt-5" role="group" aria-label="Filtrar por categoria">
+          <div className="flex flex-wrap gap-2">
             <button type="button" className="chip" aria-pressed={!category} onClick={() => update('categoria', '')}>
               Todas
             </button>
@@ -116,7 +116,7 @@ export function Products() {
           </div>
         ) : (
           <motion.ul layout={!reduced} className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 xl:grid-cols-4">
-            <AnimatePresence initial={false}>
+            <AnimatePresence>
               {results.map((p, i) => (
                 <motion.li
                   key={p.id}
@@ -124,7 +124,7 @@ export function Products() {
                   initial={reduced ? false : { opacity: 0, scale: 0.97 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={reduced ? undefined : { opacity: 0, scale: 0.97 }}
-                  transition={{ duration: 0.25 }}
+                  transition={{ duration: 0.35, delay: Math.min(i, 12) * 0.04 }}
                 >
                   <ProductCard product={p} priority={i < 2} />
                 </motion.li>

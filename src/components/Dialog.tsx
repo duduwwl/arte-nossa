@@ -46,14 +46,14 @@ export function Dialog({ open, onClose, title, children, className, hideTitle }:
       aria-labelledby={titleId}
       onClick={(e) => e.target === ref.current && ref.current?.close()}
       className={cn(
-        'm-auto max-h-[92dvh] w-[min(100vw-2rem,40rem)] rounded-lg border border-line bg-card p-0 text-ink shadow-2xl backdrop:bg-ink/55 backdrop:backdrop-blur-[2px] open:animate-[dialog-in_.22s_var(--ease-out-soft)]',
+        'm-auto max-h-[92dvh] w-[min(100vw-2rem,40rem)] rounded-lg bg-paper-2 p-0 text-ink backdrop:bg-black/75 open:animate-[dialog-in_.22s_var(--ease-out-soft)]',
         className,
       )}
     >
       {open && (
         <div className="flex max-h-[92dvh] flex-col">
-          <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-3">
-            <h2 id={titleId} className={cn('text-xl', hideTitle && 'sr-only')}>
+          <div className="flex items-center justify-between gap-4 bg-card px-5 py-3">
+            <h2 id={titleId} className={cn('text-3xl', hideTitle && 'sr-only')}>
               {title}
             </h2>
             <button type="button" className="btn-ghost ml-auto -mr-2 size-11 p-0" onClick={() => ref.current?.close()} aria-label="Fechar">

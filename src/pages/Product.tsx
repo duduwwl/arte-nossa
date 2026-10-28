@@ -24,7 +24,7 @@ function Gallery({ product, index, setIndex }: { product: P; index: number; setI
 
   return (
     <div>
-      <div className="relative overflow-hidden rounded-lg border border-line bg-card">
+      <div className="relative overflow-hidden rounded-lg bg-paper-2">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div key={i} initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={reduced ? undefined : { opacity: 0 }} transition={{ duration: 0.2 }}>
             <Img src={images[i]} alt={`${product.name}, foto ${i + 1} de ${images.length}`} fit="contain" priority className="aspect-square w-full" sizesAttr="(min-width: 1024px) 50vw, 100vw" />
@@ -55,7 +55,7 @@ function Gallery({ product, index, setIndex }: { product: P; index: number; setI
                 onClick={() => setIndex(n)}
                 aria-label={`Ver foto ${n + 1}`}
                 aria-current={n === i}
-                className={cn('block size-18 overflow-hidden rounded-md border-2', n === i ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100')}
+                className={cn('block size-18 overflow-hidden rounded-md outline-offset-2', n === i ? 'outline-3 outline-accent' : 'opacity-70 hover:opacity-100')}
               >
                 <Img src={src} alt="" className="size-full" sizesAttr="80px" />
               </button>
@@ -135,26 +135,32 @@ export function Product() {
         </ol>
       </nav>
 
-      <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
-        <Gallery product={product} index={photo} setIndex={setPhoto} />
-        <div>
-          <p className="eyebrow mb-3">{categoryName(product.category)}</p>
-          <h1 className="text-4xl sm:text-5xl">{product.name}</h1>
-          <p className="mt-4 text-2xl font-semibold tabular-nums">
+      <div className="grid gap-10 md:grid-cols-2 lg:gap-14">
+        <div className="min-w-0 animate-[rise_.7s_var(--ease-out-soft)_both]">
+          <Gallery product={product} index={photo} setIndex={setPhoto} />
+        </div>
+        <div className="stagger min-w-0">
+          <h1 className="text-[clamp(3rem,5.5vw,5.5rem)]">{product.name}</h1>
+          <p className="mt-3 text-lg">
+            <Link to={`/produtos?categoria=${product.category}`} className="link">
+              {categoryName(product.category)}
+            </Link>
+          </p>
+          <p className="mt-6 text-3xl font-semibold text-accent tabular-nums">
             {formatCents(product.priceCents)}
             <span className="ml-2 align-middle text-sm font-medium text-ink-2">valor fictício de demonstração</span>
           </p>
-          <p className="mt-5 text-lg text-ink-2">{product.description}</p>
+          <p className="mt-5 text-lg">{product.description}</p>
 
-          <fieldset className="mt-8">
+          <fieldset className={cn('mt-8', product.variants.length === 1 && 'sr-only')}>
             <legend className="label">{product.variants.length > 1 ? 'Escolha a opção' : 'Opção'}</legend>
             <div className="flex flex-wrap gap-2">
               {product.variants.map((v) => (
                 <label
                   key={v.id}
                   className={cn(
-                    'flex min-h-11 cursor-pointer items-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold transition-colors has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-teal',
-                    v.id === variant.id ? 'border-ink bg-ink text-paper' : 'border-line bg-card hover:border-ink',
+                    'flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-4 py-2 text-base font-semibold transition-colors has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-teal',
+                    v.id === variant.id ? 'bg-accent text-paper' : 'bg-card hover:bg-ink hover:text-paper',
                     v.stock === 0 && 'opacity-60',
                   )}
                 >
@@ -190,7 +196,7 @@ export function Product() {
 
           <DemoNotice className="mt-6" />
 
-          <dl className="mt-8 divide-y divide-line border-y border-line text-sm">
+          <dl className="mt-8 space-y-1 rounded-lg bg-paper-2 p-5 text-base">
             <div className="grid grid-cols-[9rem_1fr] gap-4 py-3">
               <dt className="font-semibold">Materiais e medidas</dt>
               <dd className="text-ink-2">{product.details.length ? product.details.join(' · ') : 'Não informados pela loja. Consulte pelo WhatsApp.'}</dd>
@@ -224,7 +230,7 @@ export function Product() {
           <h2 id="rel" className="mb-6 text-3xl">
             Combina com
           </h2>
-          <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+          <ul className="stagger grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
             {related.map((p) => (
               <li key={p.id}>
                 <ProductCard product={p} />

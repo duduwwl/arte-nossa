@@ -1,30 +1,30 @@
 @import 'tailwindcss';
 
-/* Arte Nossa visual system.
-   Paper and ink from the store's black-and-cream logo, a mustard accent from its brushstroke,
-   and a deep teal borrowed from the shopfront awnings on Rua Santana. */
+/* Arte Nossa: the store's own logo — a black disc, white letters, one yellow brushstroke.
+   Ground is black, text is white, yellow marks actions and the few things that matter. */
 @theme {
-  --color-paper: #f6f1e8;
-  --color-paper-2: #ede5d6;
-  --color-card: #fffdf8;
-  --color-ink: #1f1b16;
-  --color-ink-2: #5a5147;
-  --color-line: #d9cfbe;
-  --color-accent: #e8b321;
-  --color-accent-soft: #f6e3a6;
-  --color-teal: #1f5f5b;
-  --color-teal-soft: #d7e6e2;
-  --color-danger: #a3362a;
-  --color-danger-soft: #f6dcd6;
-  --color-ok: #2f6b3a;
-  --color-ok-soft: #dcebdc;
+  --color-paper: #0b0b0a;
+  --color-paper-2: #161513;
+  --color-card: #1e1c19;
+  --color-ink: #f4f4f2;
+  --color-ink-2: #bdb7ac;
+  --color-line: #3a3631;
+  --color-accent: #f2c230;
+  --color-accent-soft: #2b2410;
+  --color-teal: #f2c230;
+  --color-teal-soft: #1e1c19;
+  --color-danger: #ff8a75;
+  --color-danger-soft: #3a1712;
+  --color-ok: #8fd69a;
+  --color-ok-soft: #13281a;
 
-  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
-  --font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Anton', 'Arial Narrow', Impact, sans-serif;
+  --font-sans: 'Work Sans Variable', ui-sans-serif, system-ui, sans-serif;
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 14px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -33,18 +33,19 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 6rem;
+    color-scheme: dark;
   }
   body {
-    @apply bg-paper text-ink font-sans antialiased;
-    font-size: 1rem;
-    line-height: 1.6;
+    @apply bg-paper font-sans text-ink antialiased;
+    font-size: 1.125rem;
+    line-height: 1.5;
   }
   h1,
   h2,
   h3 {
-    @apply font-display text-ink;
-    font-optical-sizing: auto;
-    line-height: 1.1;
+    @apply font-display text-ink uppercase;
+    font-weight: 400;
+    line-height: 0.9;
     letter-spacing: -0.01em;
     text-wrap: balance;
   }
@@ -52,12 +53,13 @@
     text-wrap: pretty;
   }
   :focus-visible {
-    outline: 3px solid var(--color-teal);
+    outline: 3px solid var(--color-accent);
     outline-offset: 3px;
     border-radius: 2px;
   }
   ::selection {
-    background: var(--color-accent-soft);
+    background: var(--color-accent);
+    color: var(--color-paper);
   }
   img {
     max-width: 100%;
@@ -65,51 +67,89 @@
 }
 
 @utility container-page {
-  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-10;
-}
-@utility eyebrow {
-  @apply text-xs font-semibold tracking-[0.18em] text-ink-2 uppercase;
+  @apply mx-auto w-full max-w-[90rem] px-4 sm:px-6 lg:px-8;
 }
 @utility btn {
-  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-5 text-sm font-semibold transition-[background-color,color,transform,box-shadow] duration-200 select-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100;
+  @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-md px-5 text-base font-semibold transition-[background-color,color,transform] duration-200 select-none active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100;
 }
 @utility btn-primary {
-  @apply btn bg-ink text-paper hover:bg-teal;
+  @apply btn bg-accent text-paper hover:bg-ink;
 }
 @utility btn-accent {
-  @apply btn bg-accent text-ink hover:bg-[#d9a40f];
+  @apply btn bg-accent text-paper hover:bg-ink;
 }
 @utility btn-outline {
-  @apply btn border border-ink/25 bg-transparent text-ink hover:border-ink hover:bg-card;
+  @apply btn bg-card text-ink hover:bg-ink hover:text-paper;
 }
 @utility btn-ghost {
-  @apply btn px-3 text-ink hover:bg-paper-2;
+  @apply btn px-3 text-ink hover:bg-card;
 }
 @utility btn-danger {
-  @apply btn bg-danger text-white hover:bg-[#86281e];
+  @apply btn bg-danger text-paper hover:bg-ink;
 }
 @utility field {
-  @apply block w-full min-h-11 rounded-md border border-line bg-card px-3 py-2 text-base text-ink placeholder:text-ink-2/60 transition-colors hover:border-ink-2 focus:border-teal focus:outline-none focus-visible:outline-3 focus-visible:outline-teal/40 aria-[invalid=true]:border-danger;
+  @apply block min-h-12 w-full rounded-md border border-line bg-paper-2 px-3 py-2 text-base text-ink transition-colors placeholder:text-ink-2/70 hover:border-ink-2 focus:border-accent focus:outline-none aria-[invalid=true]:border-danger;
 }
 @utility label {
-  @apply mb-1.5 block text-sm font-semibold text-ink;
+  @apply mb-1.5 block text-base font-semibold text-ink;
 }
 @utility error-text {
-  @apply mt-1.5 text-sm text-danger;
+  @apply mt-1.5 text-base text-danger;
 }
 @utility card {
-  @apply rounded-lg border border-line bg-card;
+  @apply rounded-lg bg-paper-2;
 }
 @utility chip {
-  @apply inline-flex min-h-10 items-center rounded-full border border-line bg-card px-4 text-sm font-medium text-ink-2 transition-colors hover:border-ink hover:text-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper;
+  @apply inline-flex min-h-11 items-center rounded-md bg-paper-2 px-4 text-base font-medium text-ink transition-colors hover:bg-card aria-pressed:bg-accent aria-pressed:text-paper;
 }
 @utility badge {
-  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  @apply inline-flex items-center gap-1 rounded-sm px-2 py-0.5 text-sm font-semibold;
 }
 @utility link {
-  @apply font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:decoration-teal;
+  @apply font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4 hover:text-accent;
 }
 
+/* Children rise one after another on load; with reduced motion the global rule removes the travel. */
+.stagger > * {
+  animation: rise 0.7s var(--ease-out-soft) both;
+}
+.stagger > :nth-child(2) {
+  animation-delay: 70ms;
+}
+.stagger > :nth-child(3) {
+  animation-delay: 140ms;
+}
+.stagger > :nth-child(4) {
+  animation-delay: 210ms;
+}
+.stagger > :nth-child(5) {
+  animation-delay: 280ms;
+}
+.stagger > :nth-child(6) {
+  animation-delay: 350ms;
+}
+.stagger > :nth-child(7) {
+  animation-delay: 420ms;
+}
+.stagger > :nth-child(8) {
+  animation-delay: 490ms;
+}
+.stagger > :nth-child(9) {
+  animation-delay: 560ms;
+}
+.stagger > :nth-child(10) {
+  animation-delay: 630ms;
+}
+.stagger > :nth-child(11) {
+  animation-delay: 700ms;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

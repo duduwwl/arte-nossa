@@ -1,9 +1,9 @@
-import { MessageCircle, ShoppingBag, Trash2 } from 'lucide-react'
+import { MessageCircle, Trash2 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Img } from '@/components/Img'
 import { usePageTitle } from '@/components/Layout'
-import { Alert, DemoNotice, PageHeader, toast } from '@/components/ui'
+import { Alert, DemoNotice, EmptyBag, PageHeader, toast } from '@/components/ui'
 import { PopStepper } from '@/components/vendor/pop-stepper'
 import { whatsappLink } from '@/data/store'
 import { setBag } from '@/lib/db'
@@ -36,24 +36,17 @@ export function Bag() {
       <PageHeader eyebrow="Sua seleção" title="Sacola" />
       <div className="container-page py-10">
         {lines.length === 0 ? (
-          <div className="mx-auto max-w-md py-12 text-center">
-            <ShoppingBag aria-hidden className="mx-auto size-12 text-ink-2" />
-            <p className="mt-4 font-display text-3xl">Sua sacola está vazia</p>
-            <p className="mt-2 text-ink-2">Explore o catálogo e adicione as peças que gostar.</p>
-            <Link to="/produtos" className="btn-primary mt-8">
-              Ver produtos
-            </Link>
-          </div>
+          <EmptyBag />
         ) : (
           <div className="grid gap-10 lg:grid-cols-[1fr_22rem]">
-            <ul className="divide-y divide-line border-y border-line">
+            <ul className="stagger space-y-3">
               <AnimatePresence initial={false}>
                 {lines.map((l) => (
                   <motion.li
                     key={l.item.productId + l.item.variantId}
                     layout={!reduced}
                     exit={reduced ? undefined : { opacity: 0, height: 0 }}
-                    className="grid grid-cols-[5.5rem_1fr] gap-4 py-5 sm:grid-cols-[7rem_1fr_auto]"
+                    className="grid grid-cols-[5.5rem_1fr] gap-4 rounded-lg bg-paper-2 p-4 sm:grid-cols-[7rem_1fr_auto]"
                   >
                     <Img src={l.variant?.image ?? l.product?.images[0] ?? ''} alt="" className="aspect-square w-full rounded-md" sizesAttr="112px" />
                     <div className="min-w-0">

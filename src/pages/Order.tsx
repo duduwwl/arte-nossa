@@ -25,7 +25,7 @@ function OrderSummary({ order }: { order: Order }) {
           </li>
         ))}
       </ul>
-      <dl className="mt-5 space-y-2 border-t border-line pt-4 text-sm">
+      <dl className="mt-5 space-y-2 rounded-md bg-card p-4 text-base">
         <div className="flex justify-between"><dt>Subtotal</dt><dd className="tabular-nums">{formatCents(order.subtotalCents)}</dd></div>
         <div className="flex justify-between">
           <dt>{deliveryOptions.find((d) => d.id === order.delivery.method)?.label ?? 'Entrega'}</dt>
@@ -48,7 +48,7 @@ function FakePixArt() {
         ))}
       </div>
       <span className="absolute inset-0 grid place-items-center">
-        <span className="rounded-md bg-card px-3 py-2 text-center text-xs font-bold text-ink shadow">
+        <span className="rounded-md bg-paper px-3 py-2 text-center text-sm font-bold text-ink">
           ILUSTRAÇÃO
           <br />
           não é um QR Code
@@ -133,14 +133,14 @@ export function Payment() {
                   <motion.div
                     initial={reduced ? false : { rotateX: 12, opacity: 0 }}
                     animate={{ rotateX: 0, opacity: 1 }}
-                    className="relative mx-auto aspect-[1.586] w-full max-w-sm overflow-hidden rounded-xl bg-gradient-to-br from-ink to-teal p-5 text-paper shadow-xl"
+                    className="relative mx-auto aspect-[1.586] w-full max-w-sm overflow-hidden rounded-xl bg-accent p-5 text-paper"
                     aria-label="Cartão fictício ilustrativo"
                     role="img"
                   >
-                    <span className="badge absolute top-4 right-4 bg-accent text-ink">SIMULAÇÃO</span>
+                    <span className="badge absolute top-4 right-4 bg-paper text-ink">Simulação</span>
                     <CreditCard aria-hidden className="size-8 opacity-80" />
-                    <p className="mt-6 font-mono text-lg tracking-[0.2em]">•••• •••• •••• 0000</p>
-                    <p className="mt-4 text-xs tracking-widest uppercase opacity-80">Cartão fictício · {method === 'credito' ? 'crédito' : 'débito'}</p>
+                    <p className="mt-6 text-xl font-semibold tabular-nums">•••• •••• •••• 0000</p>
+                    <p className="mt-4 text-base font-semibold">Cartão fictício · {method === 'credito' ? 'crédito' : 'débito'}</p>
                   </motion.div>
                   <p className="mt-5 text-sm text-ink-2">Não digite dados de cartão. Nenhum número, CVV ou dado financeiro é solicitado ou armazenado.</p>
                   <div className="mt-5 grid gap-2 sm:grid-cols-2">
@@ -184,10 +184,9 @@ export function Confirmation() {
     <div className="container-page max-w-3xl py-14">
       <div className="text-center">
         {approved ? <CheckCircle2 aria-hidden className="mx-auto size-14 text-ok" /> : <XCircle aria-hidden className="mx-auto size-14 text-danger" />}
-        <p className="eyebrow mt-4">Pedido de demonstração</p>
         <h1 className="mt-2 text-4xl sm:text-5xl">{approved ? 'Pagamento simulado aprovado' : 'Pedido cancelado'}</h1>
         <p className="mt-4 text-lg text-ink-2">
-          Número do pedido: <strong className="font-mono text-ink">{order.id}</strong>
+          Número do pedido: <strong className="text-accent tabular-nums">{order.id}</strong>
         </p>
         <p className="mt-1 text-sm text-ink-2">
           {formatDateTime(order.createdAt)} · Situação: {orderStatusLabel[order.status]} · {paymentLabel[order.payment.method]}

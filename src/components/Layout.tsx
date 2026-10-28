@@ -1,5 +1,4 @@
-import { ArrowUp, MapPin, Menu, MessageCircle, ShoppingBag } from 'lucide-react'
-import { Instagram } from './Icons'
+import { Menu, ShoppingBag } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { store, whatsappLink } from '@/data/store'
@@ -27,82 +26,72 @@ export function useGoToSection() {
   }
 }
 
-function Brand({ className }: { className?: string }) {
-  return (
-    <Link to="/" className={cn('flex items-center gap-3 rounded-md', className)} aria-label="Arte Nossa, página inicial">
-      <img src={`${base}favicon.png`} alt="" width={44} height={44} className="size-11 shrink-0 rounded-full" />
-      <span className="leading-none">
-        <span className="block font-display text-xl font-semibold tracking-tight">Arte Nossa</span>
-        <span className="mt-1 block text-[11px] font-semibold tracking-[0.16em] text-ink-2 uppercase">Lavras · MG</span>
-      </span>
-    </Link>
-  )
-}
-
-const links = [
-  { to: '/', label: 'Início', end: true },
-  { to: '/produtos', label: 'Produtos' },
-]
+const navClass = ({ isActive }: { isActive: boolean }) =>
+  cn('rounded-md px-3 py-2 text-base font-semibold transition-colors hover:text-accent', isActive ? 'text-accent' : 'text-ink')
 
 function Header() {
   const { bag } = useShop()
   const count = bagCount(bag)
   const [open, setOpen] = useState(false)
   const goTo = useGoToSection()
-  const { pathname } = useLocation()
-  useEffect(() => setOpen(false), [pathname])
-
-  const navClass = ({ isActive }: { isActive: boolean }) =>
-    cn('relative rounded-md px-3 py-2 text-sm font-semibold transition-colors hover:text-teal', isActive ? 'text-ink after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:bg-accent' : 'text-ink-2')
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/80 bg-paper/90 backdrop-blur-md">
-      <div className="container-page flex h-18 items-center gap-4">
-        <Brand />
+    <header className="sticky top-0 z-40 bg-paper">
+      <div className="container-page flex h-18 items-center gap-3">
+        <Link to="/" className="flex items-center gap-3 rounded-md" aria-label="Arte Nossa, página inicial">
+          <img src={`${base}favicon.png`} alt="" width={44} height={44} className="size-11 shrink-0 rounded-full" />
+          <span className="font-display text-2xl uppercase">Arte Nossa</span>
+        </Link>
         <nav aria-label="Principal" className="ml-auto hidden items-center gap-1 md:flex">
-          {links.map((l) => (
-            <NavLink key={l.to} to={l.to} end={l.end} className={navClass}>
-              {l.label}
-            </NavLink>
-          ))}
-          <button type="button" onClick={() => goTo('sobre')} className="rounded-md px-3 py-2 text-sm font-semibold text-ink-2 hover:text-teal">
+          <NavLink to="/produtos" className={navClass}>
+            Produtos
+          </NavLink>
+          <button type="button" onClick={() => goTo('loja')} className="rounded-md px-3 py-2 text-base font-semibold hover:text-accent">
             A loja
           </button>
-          <button type="button" onClick={() => goTo('contato')} className="rounded-md px-3 py-2 text-sm font-semibold text-ink-2 hover:text-teal">
-            Contato
+          <button type="button" onClick={() => goTo('contato')} className="rounded-md px-3 py-2 text-base font-semibold hover:text-accent">
+            Visitar
           </button>
           <NavLink to="/gerencia" className={navClass}>
             Gerência
           </NavLink>
         </nav>
-        <Link to="/sacola" className="btn-outline relative ml-auto px-3 md:ml-2" aria-label={`Sacola, ${count} ${count === 1 ? 'item' : 'itens'}`}>
+        <Link to="/sacola" className="btn-primary relative ml-auto min-h-11 px-4 md:ml-3" aria-label={`Sacola, ${count} ${count === 1 ? 'item' : 'itens'}`}>
           <ShoppingBag aria-hidden className="size-5" />
-          <span className="hidden sm:inline">Sacola</span>
-          {count > 0 && (
-            <span aria-hidden className="absolute -top-2 -right-2 grid min-w-6 place-items-center rounded-full bg-accent px-1.5 text-xs font-bold text-ink">
-              {count}
-            </span>
-          )}
+          <span aria-hidden className="tabular-nums">
+            {count}
+          </span>
         </Link>
-        <button type="button" className="btn-outline px-3 md:hidden" onClick={() => setOpen(true)} aria-label="Abrir menu" aria-expanded={open}>
+        <button type="button" className="btn-outline min-h-11 px-3 md:hidden" onClick={() => setOpen(true)} aria-label="Abrir menu" aria-expanded={open}>
           <Menu aria-hidden className="size-5" />
         </button>
       </div>
       <Dialog open={open} onClose={() => setOpen(false)} title="Menu" className="mt-0 mr-0 h-dvh max-h-dvh w-[min(100vw,22rem)] rounded-none">
-        <nav aria-label="Menu móvel" className="flex flex-col gap-1 text-lg">
-          {[...links, { to: '/sacola', label: `Sacola (${count})` }, { to: '/gerencia', label: 'Gerência (demo)' }].map((l) => (
-            <NavLink key={l.to} to={l.to} end={'end' in l} className={({ isActive }) => cn('rounded-md px-3 py-3 font-semibold', isActive ? 'bg-paper-2 text-ink' : 'text-ink-2')}>
+        <nav aria-label="Menu móvel" className="flex flex-col gap-1">
+          {[
+            { to: '/', label: 'Início' },
+            { to: '/produtos', label: 'Produtos' },
+            { to: '/sacola', label: `Sacola (${count})` },
+            { to: '/gerencia', label: 'Gerência (demo)' },
+          ].map((l) => (
+            <NavLink
+              key={l.to}
+              to={l.to}
+              end
+              onClick={() => setOpen(false)}
+              className={({ isActive }) => cn('rounded-md px-3 py-3 font-display text-3xl uppercase', isActive ? 'text-accent' : 'text-ink')}
+            >
               {l.label}
             </NavLink>
           ))}
-          <button type="button" className="rounded-md px-3 py-3 text-left font-semibold text-ink-2" onClick={() => (setOpen(false), goTo('sobre'))}>
+          <button type="button" className="rounded-md px-3 py-3 text-left font-display text-3xl uppercase" onClick={() => (setOpen(false), goTo('loja'))}>
             A loja
           </button>
-          <button type="button" className="rounded-md px-3 py-3 text-left font-semibold text-ink-2" onClick={() => (setOpen(false), goTo('contato'))}>
-            Contato
+          <button type="button" className="rounded-md px-3 py-3 text-left font-display text-3xl uppercase" onClick={() => (setOpen(false), goTo('contato'))}>
+            Visitar
           </button>
-          <a href={whatsappLink()} target="_blank" rel="noreferrer" className="btn-accent mt-6">
-            <MessageCircle aria-hidden className="size-5" /> Falar no WhatsApp
+          <a href={whatsappLink()} target="_blank" rel="noreferrer" className="btn-primary mt-6">
+            Falar no WhatsApp
           </a>
         </nav>
       </Dialog>
@@ -112,50 +101,19 @@ function Header() {
 
 function Footer() {
   return (
-    <footer id="contato" className="mt-24 bg-ink text-paper">
-      <div className="container-page grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr]">
-        <div>
-          <p className="font-display text-3xl">Arte Nossa</p>
-          <p className="mt-2 text-paper/75">
-            {store.tagline}. {store.extra}.
-          </p>
-          <a href={whatsappLink('Olá, Arte Nossa! Vim pelo site.')} target="_blank" rel="noreferrer" className="btn-accent mt-6">
-            <MessageCircle aria-hidden className="size-5" /> WhatsApp {store.whatsappDisplay}
-          </a>
-        </div>
-        <div>
-          <h2 className="eyebrow mb-4 font-sans text-paper/60">Visite</h2>
-          <address className="space-y-3 not-italic">
-            <a href={store.mapsUrl} target="_blank" rel="noreferrer" className="flex gap-2 text-paper hover:text-accent">
-              <MapPin aria-hidden className="mt-1 size-4 shrink-0" />
-              {store.address}
-            </a>
-            <a href={store.instagram} target="_blank" rel="noreferrer" className="flex gap-2 text-paper hover:text-accent">
-              <Instagram aria-hidden className="mt-1 size-4 shrink-0" />
-              {store.instagramHandle}
-            </a>
-          </address>
-        </div>
-        <nav aria-label="Rodapé">
-          <h2 className="eyebrow mb-4 font-sans text-paper/60">Navegue</h2>
-          <ul className="space-y-2">
-            <li><Link to="/" className="hover:text-accent">Início</Link></li>
-            <li><Link to="/produtos" className="hover:text-accent">Produtos</Link></li>
-            <li><Link to="/sacola" className="hover:text-accent">Sacola</Link></li>
-            <li><Link to="/gerencia" className="hover:text-accent">Gerência (demonstração)</Link></li>
-          </ul>
-        </nav>
-      </div>
-      <div className="border-t border-paper/15">
-        <div className="container-page flex flex-col gap-4 py-6 text-sm text-paper/70 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            Site de demonstração: preços, estoque e pedidos são fictícios. Fotos e textos: @artenossa.
-          </p>
-          <button type="button" className="inline-flex min-h-11 items-center gap-2 self-start rounded-md px-2 font-semibold text-paper hover:text-accent" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <ArrowUp aria-hidden className="size-4" /> Voltar ao topo
-          </button>
-        </div>
-      </div>
+    <footer className="container-page mt-[30svh] grid gap-2 pb-8 text-base md:grid-cols-[1fr_auto_1fr] md:items-baseline md:gap-6">
+      <p className="text-ink-2">Arte Nossa · decoração & presentes · Lavras, MG</p>
+      <nav aria-label="Rodapé" className="flex flex-wrap gap-x-6 gap-y-1">
+        <Link to="/produtos" className="font-semibold hover:text-accent">Produtos</Link>
+        <a href={whatsappLink('Olá, Arte Nossa! Vim pelo site.')} target="_blank" rel="noreferrer" className="font-semibold hover:text-accent">
+          WhatsApp
+        </a>
+        <a href={store.instagram} target="_blank" rel="noreferrer" className="font-semibold hover:text-accent">
+          Instagram
+        </a>
+        <Link to="/gerencia" className="font-semibold hover:text-accent">Gerência</Link>
+      </nav>
+      <p className="text-ink-2 md:text-right">Loja de demonstração: valores fictícios. Fotos © @artenossa.</p>
     </footer>
   )
 }
@@ -164,8 +122,8 @@ function StorageError() {
   const { lastError } = useShop()
   if (!lastError) return null
   return (
-    <div role="alert" className="bg-danger text-white">
-      <div className="container-page flex items-center justify-between gap-4 py-2 text-sm">
+    <div role="alert" className="bg-danger text-paper">
+      <div className="container-page flex items-center justify-between gap-4 py-2 text-base">
         <span>{lastError}</span>
         <button type="button" className="min-h-11 rounded-md px-3 font-semibold underline" onClick={clearError}>
           Fechar aviso
@@ -185,7 +143,7 @@ export function Layout() {
 
   return (
     <>
-      <a href="#conteudo" onClick={(e) => (e.preventDefault(), document.getElementById('conteudo')?.focus())} className="sr-only z-50 rounded-md bg-ink px-4 py-3 text-paper focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
+      <a href="#conteudo" onClick={(e) => (e.preventDefault(), document.getElementById('conteudo')?.focus())} className="sr-only z-50 rounded-md bg-accent px-4 py-3 text-paper focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
         Pular para o conteúdo
       </a>
       <StorageError />

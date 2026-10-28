@@ -4,7 +4,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Img } from '@/components/Img'
 import { usePageTitle } from '@/components/Layout'
-import { Alert, DemoNotice, PageHeader } from '@/components/ui'
+import { Alert, DemoNotice, EmptyBag, PageHeader } from '@/components/ui'
 import type { Customer, Delivery, PaymentMethod } from '@/data/types'
 import { newOrderId, placeOrder } from '@/lib/db'
 import { bagSubtotal, deliveryOptions, type Errors, formatCents, paymentLabel, resolveBag, shippingCents, validateCustomer, validateDelivery } from '@/lib/shop'
@@ -97,13 +97,12 @@ export function Checkout() {
 
   if (!lines.length)
     return (
-      <div className="container-page py-24 text-center">
-        <h1 className="text-4xl">Sua sacola está vazia</h1>
-        <p className="mt-3 text-ink-2">Adicione produtos antes de finalizar.</p>
-        <Link to="/produtos" className="btn-primary mt-8">
-          Ver produtos
-        </Link>
-      </div>
+      <>
+        <PageHeader title="Checkout">Adicione produtos à sacola antes de finalizar o pedido de demonstração.</PageHeader>
+        <div className="container-page py-6">
+          <EmptyBag />
+        </div>
+      </>
     )
 
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setDraft((d) => ({ ...d, [k]: v }))
@@ -264,7 +263,7 @@ export function Checkout() {
 
                 {draft.step === 3 && (
                   <div className="grid max-w-xl gap-6">
-                    <dl className="card divide-y divide-line text-sm">
+                    <dl className="card space-y-1 p-1 text-base">
                       {[
                         ['Cliente', `${draft.customer.name} · ${draft.customer.email} · ${draft.customer.phone}`, 0],
                         [
@@ -321,7 +320,7 @@ export function Checkout() {
                 </li>
               ))}
             </ul>
-            <dl className="mt-5 space-y-2 border-t border-line pt-4 text-sm">
+            <dl className="mt-5 space-y-2 rounded-md bg-card p-4 text-base">
               <div className="flex justify-between"><dt>Subtotal</dt><dd className="tabular-nums">{formatCents(subtotal)}</dd></div>
               <div className="flex justify-between"><dt>Entrega (fictícia)</dt><dd className="tabular-nums">{ship ? formatCents(ship) : 'Grátis'}</dd></div>
               <div className="flex justify-between text-base font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatCents(subtotal + ship)}</dd></div>

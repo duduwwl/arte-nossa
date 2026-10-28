@@ -23,7 +23,7 @@ export function PopStepper({ value, onChange, min = 1, max, label, className }: 
     onChange(Math.max(min, Math.min(max, next)))
   }
   const btn =
-    'grid size-11 place-items-center rounded-full bg-ink text-paper transition-colors hover:bg-teal disabled:cursor-not-allowed disabled:bg-ink/25'
+    'grid size-11 place-items-center rounded-full bg-accent text-paper transition-colors hover:bg-ink disabled:cursor-not-allowed disabled:bg-card disabled:text-ink-2'
 
   return (
     <div role="group" aria-label={label} className={cn('inline-flex items-center gap-2', className)}>
@@ -37,7 +37,7 @@ export function PopStepper({ value, onChange, min = 1, max, label, className }: 
           animate={
             reduced
               ? undefined
-              : { scale: [1, 1.25, 1.25, 1], rotate: [0, incrementing ? -14 : 14, incrementing ? -14 : 14, 0], color: ['#1f1b16', '#1f5f5b', '#1f1b16'] }
+              : { scale: [1, 1.25, 1.25, 1], rotate: [0, incrementing ? -14 : 14, incrementing ? -14 : 14, 0], color: ['#f4f4f2', '#f2c230', '#f4f4f2'] }
           }
           transition={{ duration: 0.4, times: [0, 0.4, 0.6, 1], ease: 'easeInOut' }}
           className="text-lg font-bold tabular-nums"
