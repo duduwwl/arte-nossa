@@ -1,7 +1,6 @@
 import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react'
 import { motion, useInView, useScroll, useTransform } from 'motion/react'
 import { lazy, Suspense, useRef, useState, useSyncExternalStore } from 'react'
-import useMeasure from 'react-use-measure'
 import { Link } from 'react-router-dom'
 import { Img } from '@/components/Img'
 import { usePageTitle } from '@/components/Layout'
@@ -58,20 +57,20 @@ const reel = ['vasos-murano-1', 'tarsila-1', 'familia-latao-1', 'escultura-passa
 function Hero() {
   const reduced = useReducedMotion()
   const stage = useRef<HTMLDivElement>(null)
-  const [frameRef, { height }] = useMeasure()
   const { scrollYProgress } = useScroll({ target: stage, offset: ['start start', 'end end'] })
-  const step = height + 24
-  const y = useTransform(scrollYProgress, [0, 0.9], [0, -(reel.length - 1) * step])
+  // Each slide is exactly one frame tall (h-full), so the reel moves in frame heights: no measuring, no layout shift.
+  const y = useTransform(scrollYProgress, [0, 0.9], [0, reel.length - 1], { clamp: true })
+  const transform = useTransform(y, (v) => `translateY(calc(${-v} * (100% + 1.5rem)))`)
 
   return (
     <section ref={stage} aria-labelledby="titulo" className={cn('relative', !reduced && 'lg:h-[260svh]')}>
       <div className={cn('container-page flex min-h-[calc(100svh-4.5rem)] flex-col pt-6 pb-8', !reduced && 'lg:sticky lg:top-18 lg:h-[calc(100svh-4.5rem)]')}>
         <h1 id="titulo" className="relative grid flex-1 items-center gap-4 text-[clamp(4rem,15vw,8rem)] lg:grid-cols-[1fr_26vw_1fr] lg:gap-8 lg:text-[clamp(5rem,9.5vw,10rem)]">
           <span className="block">Arte Nossa</span>
-          <span ref={frameRef} aria-hidden className="relative row-start-2 block aspect-[4/3] overflow-hidden rounded-md bg-paper-2 lg:row-start-auto lg:aspect-[4/5]">
-            <motion.span className="flex flex-col gap-6" style={reduced ? undefined : { y }}>
+          <span aria-hidden className="relative row-start-2 block aspect-[4/3] overflow-hidden rounded-md bg-paper-2 lg:row-start-auto lg:aspect-[4/5]">
+            <motion.span className="flex h-full flex-col gap-6" style={reduced ? undefined : { transform }}>
               {reel.map((src, i) => (
-                <span key={src} className="block shrink-0" style={{ height: height || undefined }}>
+                <span key={src} className="block h-full shrink-0">
                   <Img src={src} alt="" priority={i === 0} className="size-full" sizesAttr="(min-width: 1024px) 26vw, 100vw" />
                 </span>
               ))}
@@ -144,7 +143,7 @@ function Showcase({ products }: { products: Product[] }) {
         </div>
         <ul
           ref={track}
-          className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-4 pb-4 [scrollbar-width:none] sm:px-6 lg:px-8 [&::-webkit-scrollbar]:hidden"
+          className="flex snap-x snap-mandatory gap-6 overflow-x-auto px-4 pb-4 [scrollbar-width:none] sm:px-6 lg:px-8 [&::-webkit-scrollbar]:hidden"
           tabIndex={0}
           aria-label="Peças em destaque, role para o lado"
         >
