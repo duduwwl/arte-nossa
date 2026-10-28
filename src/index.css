@@ -1,0 +1,123 @@
+@import 'tailwindcss';
+
+/* Arte Nossa visual system.
+   Paper and ink from the store's black-and-cream logo, a mustard accent from its brushstroke,
+   and a deep teal borrowed from the shopfront awnings on Rua Santana. */
+@theme {
+  --color-paper: #f6f1e8;
+  --color-paper-2: #ede5d6;
+  --color-card: #fffdf8;
+  --color-ink: #1f1b16;
+  --color-ink-2: #5a5147;
+  --color-line: #d9cfbe;
+  --color-accent: #e8b321;
+  --color-accent-soft: #f6e3a6;
+  --color-teal: #1f5f5b;
+  --color-teal-soft: #d7e6e2;
+  --color-danger: #a3362a;
+  --color-danger-soft: #f6dcd6;
+  --color-ok: #2f6b3a;
+  --color-ok-soft: #dcebdc;
+
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+  --font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display text-ink;
+    font-optical-sizing: auto;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-teal);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  ::selection {
+    background: var(--color-accent-soft);
+  }
+  img {
+    max-width: 100%;
+  }
+}
+
+@utility container-page {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-10;
+}
+@utility eyebrow {
+  @apply text-xs font-semibold tracking-[0.18em] text-ink-2 uppercase;
+}
+@utility btn {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-5 text-sm font-semibold transition-[background-color,color,transform,box-shadow] duration-200 select-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100;
+}
+@utility btn-primary {
+  @apply btn bg-ink text-paper hover:bg-teal;
+}
+@utility btn-accent {
+  @apply btn bg-accent text-ink hover:bg-[#d9a40f];
+}
+@utility btn-outline {
+  @apply btn border border-ink/25 bg-transparent text-ink hover:border-ink hover:bg-card;
+}
+@utility btn-ghost {
+  @apply btn px-3 text-ink hover:bg-paper-2;
+}
+@utility btn-danger {
+  @apply btn bg-danger text-white hover:bg-[#86281e];
+}
+@utility field {
+  @apply block w-full min-h-11 rounded-md border border-line bg-card px-3 py-2 text-base text-ink placeholder:text-ink-2/60 transition-colors hover:border-ink-2 focus:border-teal focus:outline-none focus-visible:outline-3 focus-visible:outline-teal/40 aria-[invalid=true]:border-danger;
+}
+@utility label {
+  @apply mb-1.5 block text-sm font-semibold text-ink;
+}
+@utility error-text {
+  @apply mt-1.5 text-sm text-danger;
+}
+@utility card {
+  @apply rounded-lg border border-line bg-card;
+}
+@utility chip {
+  @apply inline-flex min-h-10 items-center rounded-full border border-line bg-card px-4 text-sm font-medium text-ink-2 transition-colors hover:border-ink hover:text-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper;
+}
+@utility badge {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+}
+@utility link {
+  @apply font-semibold text-teal underline decoration-teal/30 underline-offset-4 hover:decoration-teal;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
