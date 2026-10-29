@@ -115,7 +115,7 @@ function Hero() {
             </motion.span>
           </span>
           <span className="row-start-3 block animate-[rise_.9s_.3s_var(--ease-out-soft)_both] text-right text-[clamp(3rem,12vw,6rem)] lg:row-start-auto lg:text-[clamp(3.5rem,5.6vw,6.5rem)]">
-            Rua Santana 221
+            Beleza em cada detalhe
           </span>
         </h1>
         <div className="mt-6 grid animate-[rise_.9s_.45s_var(--ease-out-soft)_both] gap-5 sm:grid-cols-[minmax(0,34rem)_auto] sm:items-end sm:justify-between">
