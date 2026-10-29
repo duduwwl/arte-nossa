@@ -300,26 +300,40 @@ function Shop() {
   )
 }
 
-// --- 5. One piece, full screen, slowly coming closer ---
+// --- 5. One piece, shown whole at (close to) its real resolution, drifting gently with the scroll ---
 function FullBleed() {
   const ref = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const scale = useTransform(scrollYProgress, [0, 1], [1.12, 1])
+  // The source photo is 1440px square: keep the zoom tiny so it never looks soft.
+  const scale = useTransform(scrollYProgress, [0, 1], [1.04, 1])
+  const y = useTransform(scrollYProgress, [0, 1], [40, -40])
   return (
-    <section ref={ref} aria-labelledby="tarsila" className="relative mt-40 h-[88svh] overflow-hidden sm:h-[100svh]">
-      <motion.div className="absolute inset-0" style={reduced ? undefined : { scale }}>
-        <Img src="tarsila-1" alt="Escultura em tom areia inspirada no Abaporu, da collab MART + Tarsila" className="size-full" sizesAttr="100vw" />
-      </motion.div>
-      <div className="absolute inset-x-0 bottom-0 bg-paper/80 py-6">
-        <div className="container-page flex flex-wrap items-end justify-between gap-4">
-          <h2 id="tarsila" className="text-[clamp(3rem,7vw,7rem)]">
-            MART + Tarsila
-          </h2>
-          <Link to="/produto/escultura-mart-tarsila" className="link inline-flex min-h-11 items-center gap-1 text-lg">
-            A collab que leva Tarsila do Amaral para a decoração <ArrowRight aria-hidden className="size-4" />
-          </Link>
-        </div>
+    <section ref={ref} aria-labelledby="tarsila" className="container-page mt-40 grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
+      <div className="overflow-hidden rounded-xl lg:col-span-7">
+        <motion.div style={reduced ? undefined : { scale }}>
+          <Img
+            src="tarsila-1"
+            alt="Escultura em tom areia inspirada no Abaporu, da collab MART + Tarsila"
+            className="aspect-square w-full"
+            sizesAttr="(min-width: 1024px) 55vw, 100vw"
+          />
+        </motion.div>
+      </div>
+      <div className="lg:col-span-5">
+        <h2 id="tarsila" className="text-[clamp(3rem,6vw,6rem)]">
+          MART + Tarsila
+        </h2>
+        <p className="mt-6 text-lg">
+          Inspirada no legado de Tarsila do Amaral, a collab leva para a decoração referências a uma das maiores artistas do país, conectando arte e design em peças cheias de
+          personalidade.
+        </p>
+        <Link to="/produto/escultura-mart-tarsila" className="btn-primary mt-8">
+          Ver a escultura <ArrowRight aria-hidden className="size-4" />
+        </Link>
+        <motion.div className="mt-12 w-1/2 overflow-hidden rounded-xl" style={reduced ? undefined : { y }}>
+          <Img src="tarsila-3" alt="Embalagem da collab com reprodução de obra de Tarsila do Amaral" className="aspect-square w-full" sizesAttr="(min-width: 1024px) 20vw, 50vw" />
+        </motion.div>
       </div>
     </section>
   )
