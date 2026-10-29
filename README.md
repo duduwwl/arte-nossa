@@ -68,17 +68,18 @@ Uma loja real precisaria de:
 
 ## Créditos e licenças
 
-Visual: fundo preto, texto branco e amarelo nas ações, as cores do logo da loja. Tipografia Anton (títulos) e Work Sans (texto). Direção de arte definida com a skill `design-taste-frontend` (direção "pinned poster"), conferida com o inspetor dela em 1440, 768 e 390 px.
+Visual: fundo preto, texto branco e amarelo nas ações, as cores do logo da loja. Tipografia Instrument Serif (títulos, serifa fina) e Manrope (texto). Direção de arte definida com a skill `design-taste-frontend` (direção "pinned poster"), conferida com o inspetor dela em 1440, 768 e 390 px.
 
 Componentes de terceiros, em `src/components/vendor/`:
 
 - **Motion Primitives**, `InView`: entradas das seções. MIT, © ibelick. https://motion-primitives.com
+- **Motion Primitives**, `AnimatedBackground` (destaque que desliza entre os links do menu), `Magnetic` (botões que acompanham o cursor) e `Tilt` (cards da vitrine inclinam com o mouse).
 - **Motion Primitives**, `TextLoop`: alterna as categorias na frase de abertura. `InfiniteSlider`: faixa contínua de fotos das peças. MIT, © ibelick.
 - **Spell UI**, `BlurReveal`: título "Monte sua seleção". MIT, © xxtomm. https://spell.sh
 - **Fancy Components**, `VerticalCutReveal`: títulos "Vitrine da semana" e "Para cada canto" entram letra por letra. MIT, © Daniel Petho. https://www.fancycomponents.dev
 - **Watermelon UI**, `PopStepper`: seletor de quantidade. MIT. https://ui.watermelon.sh. Adaptado para ser controlado e acessível, com as cores da marca.
 - **Canvas UI**, `Canvas`: efeito de tela pintada na foto da fachada (seção "Visite a loja"). Código aberto. https://canvasui.dev. Só é carregado em navegadores com a API experimental HTML-in-Canvas. Nos demais, a foto aparece estática.
 
-Bibliotecas: React, React Router, Motion, Tailwind CSS, lucide-react, Vite e Vitest. Fontes: Anton e Work Sans, hospedadas no próprio site via @fontsource (SIL OFL).
+Bibliotecas: React, React Router, Motion, Tailwind CSS, lucide-react, Vite e Vitest. Fontes: Instrument Serif e Manrope, hospedadas no próprio site via @fontsource (SIL OFL).
 
 Fotos e textos dos produtos: © Arte Nossa (@artenossa).

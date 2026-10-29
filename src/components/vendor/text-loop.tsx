@@ -1,4 +1,5 @@
 // Source: Motion Primitives — TextLoop (https://motion-primitives.com/docs/text-loop). MIT License, (c) ibelick.
+// Local change: renders spans instead of divs so it can sit inside a paragraph.
 'use client';
 import { cn } from '@/lib/utils';
 import {
@@ -55,9 +56,9 @@ export function TextLoop({
   };
 
   return (
-    <div className={cn('relative inline-block whitespace-nowrap', className)}>
+    <span className={cn('relative inline-block whitespace-nowrap', className)}>
       <AnimatePresence mode={mode} initial={false}>
-        <motion.div
+        <motion.span
           key={currentIndex}
           initial='initial'
           animate='animate'
@@ -66,8 +67,8 @@ export function TextLoop({
           variants={variants || motionVariants}
         >
           {items[currentIndex]}
-        </motion.div>
+        </motion.span>
       </AnimatePresence>
-    </div>
+    </span>
   );
 }

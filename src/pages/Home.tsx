@@ -1,12 +1,14 @@
 import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react'
-import { motion, useInView, useScroll, useTransform } from 'motion/react'
-import { lazy, Suspense, useRef, useState, useSyncExternalStore } from 'react'
+import { animate, motion, useInView, useMotionValue, useMotionValueEvent, useScroll, useTransform } from 'motion/react'
+import { lazy, Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
 import { Img } from '@/components/Img'
 import { usePageTitle } from '@/components/Layout'
 import { Reveal } from '@/components/ui'
 import { BlurReveal } from '@/components/vendor/blur-reveal'
 import { InfiniteSlider } from '@/components/vendor/infinite-slider'
+import { Magnetic } from '@/components/vendor/magnetic'
+import { Tilt } from '@/components/vendor/tilt'
 import { TextLoop } from '@/components/vendor/text-loop'
 import VerticalCutReveal from '@/components/vendor/vertical-cut-reveal'
 import { categories } from '@/data/products'
@@ -54,20 +56,56 @@ function CutTitle({ children, className, id }: { children: string; className?: s
 // --- 1. Hero: the name and the street hold still while the shop window rolls between them ---
 const reel = ['vasos-murano-1', 'tarsila-1', 'familia-latao-1', 'escultura-passaro-1', 'rechaud-petiscos-1']
 
+const lgQuery = typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px)') : null
+
+/** The store's brushstroke, drawn under the name when the page opens. */
+function Brushstroke() {
+  const reduced = useReducedMotion()
+  return (
+    <svg aria-hidden viewBox="0 0 320 34" className="mt-1 block h-[0.22em] w-[3.2em] overflow-visible text-accent" fill="none">
+      <motion.path
+        d="M4 24 C 70 8, 150 4, 236 12 C 262 14, 286 22, 300 14 L 312 6 L 306 20 L 316 16"
+        stroke="currentColor"
+        strokeWidth="9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={reduced ? false : { pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.1, delay: 0.45, ease: [0.65, 0, 0.35, 1] }}
+      />
+    </svg>
+  )
+}
+
 function Hero() {
   const reduced = useReducedMotion()
   const stage = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: stage, offset: ['start start', 'end end'] })
+  const idx = useMotionValue(0)
+  // Desktop: the reel follows the scroll under the pinned title. Phone and tablet: it advances on its own.
+  useMotionValueEvent(scrollYProgress, 'change', (p) => {
+    if (lgQuery?.matches) idx.set(Math.min(1, p / 0.9) * (reel.length - 1))
+  })
+  useEffect(() => {
+    if (reduced) return
+    const timer = setInterval(() => {
+      if (lgQuery?.matches) return
+      animate(idx, (Math.round(idx.get()) + 1) % reel.length, { duration: 0.9, ease: [0.65, 0, 0.35, 1] })
+    }, 3200)
+    return () => clearInterval(timer)
+  }, [idx, reduced])
   // Each slide is exactly one frame tall (h-full), so the reel moves in frame heights: no measuring, no layout shift.
-  const y = useTransform(scrollYProgress, [0, 0.9], [0, reel.length - 1], { clamp: true })
-  const transform = useTransform(y, (v) => `translateY(calc(${-v} * (100% + 1.5rem)))`)
+  const transform = useTransform(idx, (v) => `translateY(calc(${-v} * (100% + 1.5rem)))`)
 
   return (
     <section ref={stage} aria-labelledby="titulo" className={cn('relative', !reduced && 'lg:h-[260svh]')}>
       <div className={cn('container-page flex min-h-[calc(100svh-4.5rem)] flex-col pt-6 pb-8', !reduced && 'lg:sticky lg:top-18 lg:h-[calc(100svh-4.5rem)]')}>
-        <h1 id="titulo" className="relative grid flex-1 items-center gap-4 text-[clamp(4rem,15vw,8rem)] lg:grid-cols-[1fr_26vw_1fr] lg:gap-8 lg:text-[clamp(5rem,9.5vw,10rem)]">
-          <span className="block">Arte Nossa</span>
-          <span aria-hidden className="relative row-start-2 block aspect-[4/3] overflow-hidden rounded-md bg-paper-2 lg:row-start-auto lg:aspect-[4/5]">
+        <h1 id="titulo" className="relative grid flex-1 items-center gap-4 text-[clamp(4rem,16vw,8rem)] lg:grid-cols-[1fr_26vw_1fr] lg:gap-8 lg:text-[clamp(4.5rem,8vw,9rem)]">
+          <span className="stagger block">
+            <span className="block">Arte Nossa</span>
+            <Brushstroke />
+          </span>
+          <span aria-hidden className="relative row-start-2 block aspect-[4/3] animate-[rise_.9s_.15s_var(--ease-out-soft)_both] overflow-hidden rounded-xl bg-paper-2 lg:row-start-auto lg:aspect-[4/5]">
             <motion.span className="flex h-full flex-col gap-6" style={reduced ? undefined : { transform }}>
               {reel.map((src, i) => (
                 <span key={src} className="block h-full shrink-0">
@@ -76,9 +114,11 @@ function Hero() {
               ))}
             </motion.span>
           </span>
-          <span className="row-start-3 block text-right text-[clamp(3rem,11vw,6rem)] lg:row-start-auto lg:text-[clamp(3.5rem,5.8vw,6.5rem)]">Rua Santana 221</span>
+          <span className="row-start-3 block animate-[rise_.9s_.3s_var(--ease-out-soft)_both] text-right text-[clamp(3rem,12vw,6rem)] lg:row-start-auto lg:text-[clamp(3.5rem,5.6vw,6.5rem)]">
+            Rua Santana 221
+          </span>
         </h1>
-        <div className="mt-6 grid gap-5 sm:grid-cols-[minmax(0,34rem)_auto] sm:items-end sm:justify-between">
+        <div className="mt-6 grid animate-[rise_.9s_.45s_var(--ease-out-soft)_both] gap-5 sm:grid-cols-[minmax(0,34rem)_auto] sm:items-end sm:justify-between">
           <p className="text-lg">
             Loja de decoração e presentes em Lavras, MG:{' '}
             {reduced ? (
@@ -90,9 +130,11 @@ function Hero() {
             )}
             , escolhidos à mão para a sua casa.
           </p>
-          <Link to="/produtos" className="btn-primary h-14 px-7 text-lg">
-            Ver a vitrine <ArrowRight aria-hidden className="size-5" />
-          </Link>
+          <Magnetic intensity={reduced ? 0 : 0.35} range={120}>
+            <Link to="/produtos" className="btn-primary h-14 w-full px-8 text-lg sm:w-auto">
+              Ver a vitrine <ArrowRight aria-hidden className="size-5" />
+            </Link>
+          </Magnetic>
         </div>
       </div>
     </section>
@@ -105,18 +147,20 @@ const panelTones = ['bg-paper-2', 'bg-[#2b2410]', 'bg-card', 'bg-[#1d2420]', 'bg
 function ShowcaseCard({ p, i }: { p: Product; i: number }) {
   return (
     <li className="w-[min(82vw,36rem)] shrink-0 snap-start">
-      <Link to={`/produto/${p.id}`} className="group block overflow-hidden rounded-md">
+      <Tilt rotationFactor={5} springOptions={{ stiffness: 260, damping: 26 }}>
+      <Link to={`/produto/${p.id}`} className="group block overflow-hidden rounded-xl">
         <span className="block aspect-[4/3] overflow-hidden">
           <Img src={p.images[0]} alt="" className="size-full transition-transform duration-700 group-hover:scale-[1.04]" sizesAttr="(min-width: 768px) 36rem, 82vw" />
         </span>
         <span className={cn('flex min-h-36 flex-col justify-between gap-3 p-6 sm:flex-row sm:items-end', panelTones[i % panelTones.length])}>
-          <span className="font-display text-2xl uppercase leading-none sm:text-4xl">{p.name}</span>
+          <span className="font-display text-3xl leading-none sm:text-4xl">{p.name}</span>
           <span className="shrink-0 text-base sm:text-right">
             {formatCents(p.priceCents)}
             <span className="block text-ink-2">valor fictício</span>
           </span>
         </span>
       </Link>
+      </Tilt>
     </li>
   )
 }
@@ -129,9 +173,9 @@ function Showcase({ products }: { products: Product[] }) {
       <Img src="lanternas-fibra-1" alt="" className="absolute inset-0 size-full brightness-[0.45]" sizesAttr="100vw" />
       <div className="relative">
         <div className="container-page mb-10 flex flex-wrap items-end justify-between gap-6">
-          <CutTitle id="vitrine" className="text-[clamp(3rem,7vw,7rem)]">
+          <h2 id="vitrine" className="animate-[rise_.8s_var(--ease-out-soft)_both] text-[clamp(3rem,7vw,7rem)]">
             Vitrine da semana
-          </CutTitle>
+          </h2>
           <div className="flex gap-2">
             <button type="button" className="btn-outline size-14 p-0" onClick={() => go(-1)} aria-label="Peças anteriores">
               <ArrowLeft aria-hidden className="size-5" />
@@ -188,13 +232,13 @@ function Corners() {
                 onFocus={() => setActive(i)}
                 className={cn('flex min-h-14 w-full items-baseline justify-between gap-4 text-left transition-colors', i === active ? 'text-accent' : 'text-ink hover:text-accent')}
               >
-                <span className="font-display text-4xl uppercase leading-none">{c.name}</span>
-                <span className="text-base text-ink-2 tabular-nums">{counts[c.id]} peças</span>
+                <span className="font-display text-4xl leading-none sm:text-5xl">{c.name}</span>
+                <span className="text-base text-ink-2 tabular-nums">{counts[c.id]} {counts[c.id] === 1 ? "peça" : "peças"}</span>
               </button>
               {i === active && (
                 <motion.div initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-start gap-3 pt-1 pb-5 sm:flex-row-reverse sm:items-center sm:justify-end sm:gap-4">
                   <Link to={`/produtos?categoria=${c.id}`} className="btn-primary min-h-11 shrink-0">
-                    Ver as {counts[c.id]} peças <ArrowRight aria-hidden className="size-4" />
+                    {counts[c.id] === 1 ? "Ver a peça" : `Ver as ${counts[c.id]} peças`} <ArrowRight aria-hidden className="size-4" />
                   </Link>
                   <p className="max-w-[34ch] text-lg sm:flex-1">{c.blurb}</p>
                 </motion.div>

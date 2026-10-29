@@ -1,12 +1,15 @@
 import { Menu, ShoppingBag } from 'lucide-react'
+import { motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { store, whatsappLink } from '@/data/store'
 import { clearError } from '@/lib/db'
 import { bagCount } from '@/lib/shop'
-import { cn, useShop } from '@/lib/utils'
+import { cn, useReducedMotion, useShop } from '@/lib/utils'
 import { Dialog } from './Dialog'
 import { Toaster } from './ui'
+import { AnimatedBackground } from './vendor/animated-background'
+import { Magnetic } from './vendor/magnetic'
 
 const base = import.meta.env.BASE_URL
 
@@ -26,48 +29,99 @@ export function useGoToSection() {
   }
 }
 
-const navClass = ({ isActive }: { isActive: boolean }) =>
-  cn('rounded-md px-3 py-2 text-base font-semibold transition-colors hover:text-accent', isActive ? 'text-accent' : 'text-ink')
+function NavItem({ to, label, onClick, active }: { to?: string; label: string; onClick?: () => void; active?: boolean }) {
+  const inner = (
+    <span className="relative z-10 flex flex-col items-center px-4 py-2">
+      {label}
+      {active && <motion.span layoutId="nav-dot" className="absolute -bottom-0.5 size-1.5 rounded-full bg-accent" />}
+    </span>
+  )
+  const cls = cn('rounded-full text-base font-medium transition-colors', active ? 'text-ink' : 'text-ink-2 hover:text-ink')
+  return to ? (
+    <Link to={to} className={cls} aria-current={active ? 'page' : undefined}>
+      {inner}
+    </Link>
+  ) : (
+    <button type="button" onClick={onClick} className={cls}>
+      {inner}
+    </button>
+  )
+}
 
 function Header() {
   const { bag } = useShop()
   const count = bagCount(bag)
   const [open, setOpen] = useState(false)
   const goTo = useGoToSection()
+  const { pathname } = useLocation()
+  const reduced = useReducedMotion()
+  const { scrollY } = useScroll()
+  const [solid, setSolid] = useState(false)
+  const [hidden, setHidden] = useState(false)
+
+  // Transparent over the top of the page, solid once scrolled; slides away going down, back going up.
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const prev = scrollY.getPrevious() ?? 0
+    setSolid(y > 24)
+    setHidden(!open && y > 240 && y > prev + 4 ? true : y < prev - 4 ? false : hidden)
+  })
+
+  const links = [
+    { id: 'produtos', to: '/produtos', label: 'Produtos', active: pathname.startsWith('/produto') },
+    { id: 'loja', label: 'A loja', onClick: () => goTo('loja') },
+    { id: 'visitar', label: 'Visitar', onClick: () => goTo('contato') },
+    { id: 'gerencia', to: '/gerencia', label: 'Gerência', active: pathname === '/gerencia' },
+  ]
 
   return (
-    <header className="sticky top-0 z-40 bg-paper">
+    <motion.header
+      className={cn('sticky top-0 z-40 transition-colors duration-300', solid ? 'bg-paper' : 'bg-transparent')}
+      animate={{ y: hidden && !reduced ? '-100%' : '0%' }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="container-page flex h-18 items-center gap-3">
-        <Link to="/" className="flex items-center gap-3 rounded-md" aria-label="Arte Nossa, página inicial">
-          <img src={`${base}favicon.png`} alt="" width={44} height={44} className="size-11 shrink-0 rounded-full" />
-          <span className="font-display text-2xl uppercase">Arte Nossa</span>
+        <Link to="/" className="group flex items-center gap-3 rounded-full" aria-label="Arte Nossa, página inicial">
+          <img
+            src={`${base}favicon.png`}
+            alt=""
+            width={44}
+            height={44}
+            className="size-11 shrink-0 rounded-full transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:rotate-[-12deg]"
+          />
+          <span className="font-display text-3xl leading-none">Arte Nossa</span>
         </Link>
-        <nav aria-label="Principal" className="ml-auto hidden items-center gap-1 md:flex">
-          <NavLink to="/produtos" className={navClass}>
-            Produtos
-          </NavLink>
-          <button type="button" onClick={() => goTo('loja')} className="rounded-md px-3 py-2 text-base font-semibold hover:text-accent">
-            A loja
-          </button>
-          <button type="button" onClick={() => goTo('contato')} className="rounded-md px-3 py-2 text-base font-semibold hover:text-accent">
-            Visitar
-          </button>
-          <NavLink to="/gerencia" className={navClass}>
-            Gerência
-          </NavLink>
+        <nav aria-label="Principal" className="ml-auto hidden items-center md:flex">
+          <AnimatedBackground className="rounded-full bg-card" transition={{ type: 'spring', bounce: 0.2, duration: 0.35 }} enableHover>
+            {links.map((l) => (
+              <div key={l.id} data-id={l.id}>
+                <NavItem to={l.to} label={l.label} onClick={l.onClick} active={l.active} />
+              </div>
+            ))}
+          </AnimatedBackground>
         </nav>
-        <Link to="/sacola" className="btn-primary relative ml-auto min-h-11 px-4 md:ml-3" aria-label={`Sacola, ${count} ${count === 1 ? 'item' : 'itens'}`}>
-          <ShoppingBag aria-hidden className="size-5" />
-          <span aria-hidden className="tabular-nums">
-            {count}
-          </span>
-        </Link>
+        <div className="ml-auto md:ml-3">
+        <Magnetic intensity={reduced ? 0 : 0.3} range={80}>
+          <Link to="/sacola" className="btn-primary relative min-h-11 px-4" aria-label={`Sacola, ${count} ${count === 1 ? 'item' : 'itens'}`}>
+            <ShoppingBag aria-hidden className="size-5" />
+            <motion.span
+              key={count}
+              aria-hidden
+              className="tabular-nums"
+              initial={reduced ? false : { scale: 1.8, y: -4 }}
+              animate={{ scale: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 14 }}
+            >
+              {count}
+            </motion.span>
+          </Link>
+        </Magnetic>
+        </div>
         <button type="button" className="btn-outline min-h-11 px-3 md:hidden" onClick={() => setOpen(true)} aria-label="Abrir menu" aria-expanded={open}>
           <Menu aria-hidden className="size-5" />
         </button>
       </div>
       <Dialog open={open} onClose={() => setOpen(false)} title="Menu" className="mt-0 mr-0 h-dvh max-h-dvh w-[min(100vw,22rem)] rounded-none">
-        <nav aria-label="Menu móvel" className="flex flex-col gap-1">
+        <nav aria-label="Menu móvel" className="stagger flex flex-col gap-1">
           {[
             { to: '/', label: 'Início' },
             { to: '/produtos', label: 'Produtos' },
@@ -79,15 +133,15 @@ function Header() {
               to={l.to}
               end
               onClick={() => setOpen(false)}
-              className={({ isActive }) => cn('rounded-md px-3 py-3 font-display text-3xl uppercase', isActive ? 'text-accent' : 'text-ink')}
+              className={({ isActive }) => cn('rounded-md px-3 py-3 font-display text-4xl', isActive ? 'text-accent' : 'text-ink')}
             >
               {l.label}
             </NavLink>
           ))}
-          <button type="button" className="rounded-md px-3 py-3 text-left font-display text-3xl uppercase" onClick={() => (setOpen(false), goTo('loja'))}>
+          <button type="button" className="rounded-md px-3 py-3 text-left font-display text-4xl" onClick={() => (setOpen(false), goTo('loja'))}>
             A loja
           </button>
-          <button type="button" className="rounded-md px-3 py-3 text-left font-display text-3xl uppercase" onClick={() => (setOpen(false), goTo('contato'))}>
+          <button type="button" className="rounded-md px-3 py-3 text-left font-display text-4xl" onClick={() => (setOpen(false), goTo('contato'))}>
             Visitar
           </button>
           <a href={whatsappLink()} target="_blank" rel="noreferrer" className="btn-primary mt-6">
@@ -95,7 +149,7 @@ function Header() {
           </a>
         </nav>
       </Dialog>
-    </header>
+    </motion.header>
   )
 }
 
