@@ -86,7 +86,7 @@ function Header() {
             alt=""
             width={44}
             height={44}
-            className="size-11 shrink-0 rounded-full transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:rotate-[-12deg]"
+            className="size-11 shrink-0 rounded-full"
           />
           <span className="font-display text-3xl leading-none">Arte Nossa</span>
         </Link>
