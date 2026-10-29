@@ -88,9 +88,12 @@ function Hero() {
   })
   useEffect(() => {
     if (reduced) return
+    // Two rounds, then it rests on the first piece (moving content must not run forever).
+    let steps = 0
     const timer = setInterval(() => {
       if (lgQuery?.matches) return
-      animate(idx, (Math.round(idx.get()) + 1) % reel.length, { duration: 0.9, ease: [0.65, 0, 0.35, 1] })
+      if (++steps > reel.length * 2) return clearInterval(timer)
+      animate(idx, steps % reel.length, { duration: 0.9, ease: [0.65, 0, 0.35, 1] })
     }, 3200)
     return () => clearInterval(timer)
   }, [idx, reduced])
@@ -124,7 +127,7 @@ function Hero() {
             {reduced ? (
               <span className="font-semibold text-accent">esculturas, vasos, mesa posta e listas de casamento</span>
             ) : (
-              <TextLoop className="align-bottom font-semibold text-accent" interval={2.2}>
+              <TextLoop className="align-bottom font-semibold text-accent" interval={2.2} cycles={2}>
                 {['esculturas', 'vasos de Murano', 'mesa posta', 'arte sacra', 'listas de casamento']}
               </TextLoop>
             )}

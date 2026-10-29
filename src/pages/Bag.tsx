@@ -10,7 +10,7 @@ import { setBag } from '@/lib/db'
 import { bagSubtotal, formatCents, removeFromBag, resolveBag, setBagQty, type BagLine } from '@/lib/shop'
 import { useReducedMotion, useShop } from '@/lib/utils'
 
-export function selectionMessage(lines: BagLine[]) {
+function selectionMessage(lines: BagLine[]) {
   const items = lines
     .filter((l) => l.product)
     .map((l) => `• ${l.item.qty}× ${l.product!.name}${l.product!.variants.length > 1 ? ` (${l.variant?.label ?? 'opção removida'})` : ''}`)
@@ -27,8 +27,9 @@ export function Bag() {
   const hasProblem = lines.some((l) => l.problem)
 
   const remove = (l: BagLine) => {
+    const before = bag
     setBag(removeFromBag(bag, l.item.productId, l.item.variantId))
-    toast(`${l.product?.name ?? 'Item'} removido da sacola.`)
+    toast(`${l.product?.name ?? 'Item'} removido da sacola.`, { label: 'Desfazer', run: () => setBag(before) })
   }
 
   return (

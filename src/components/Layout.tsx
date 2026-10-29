@@ -20,7 +20,7 @@ export function usePageTitle(title: string) {
 }
 
 /** Navigates to a section of the home page (HashRouter owns the URL hash, so plain #anchors are not used). */
-export function useGoToSection() {
+function useGoToSection() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   return (id: string) => {
@@ -88,7 +88,7 @@ function Header() {
             height={44}
             className="size-11 shrink-0 rounded-full"
           />
-          <span className="font-display text-3xl leading-none">Arte Nossa</span>
+          <span translate="no" className="font-display text-3xl leading-none">Arte Nossa</span>
         </Link>
         <nav aria-label="Principal" className="ml-auto hidden items-center md:flex">
           <AnimatedBackground className="rounded-full bg-card" transition={{ type: 'spring', bounce: 0.2, duration: 0.35 }} enableHover>

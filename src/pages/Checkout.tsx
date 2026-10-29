@@ -171,13 +171,13 @@ export function Checkout() {
                   <form className="grid max-w-xl gap-5" onSubmit={(e) => (e.preventDefault(), next())} noValidate>
                     <Alert tone="info">Use apenas dados fictícios. Esta demonstração não precisa de dados pessoais reais.</Alert>
                     <Field id="nome" label="Nome" error={errors.name}>
-                      <input {...aria('nome', errors.name)} className="field" autoComplete="off" value={draft.customer.name} onChange={(e) => setC('name', e.target.value)} placeholder="Ex.: Maria Teste" />
+                      <input {...aria('nome', errors.name)} name="name" className="field" autoComplete="off" value={draft.customer.name} onChange={(e) => setC('name', e.target.value)} placeholder="Ex.: Maria Teste" />
                     </Field>
                     <Field id="email" label="E-mail" error={errors.email}>
-                      <input {...aria('email', errors.email)} type="email" className="field" autoComplete="off" value={draft.customer.email} onChange={(e) => setC('email', e.target.value)} placeholder="teste@exemplo.com" />
+                      <input {...aria('email', errors.email)} name="email" type="email" spellCheck={false} className="field" autoComplete="off" value={draft.customer.email} onChange={(e) => setC('email', e.target.value)} placeholder="teste@exemplo.com" />
                     </Field>
                     <Field id="tel" label="Telefone" error={errors.phone}>
-                      <input {...aria('tel', errors.phone)} type="tel" inputMode="tel" className="field" autoComplete="off" value={draft.customer.phone} onChange={(e) => setC('phone', e.target.value)} placeholder="(35) 90000-0000" />
+                      <input {...aria('tel', errors.phone)} name="tel" type="tel" inputMode="tel" className="field" autoComplete="off" value={draft.customer.phone} onChange={(e) => setC('phone', e.target.value)} placeholder="(35) 90000-0000" />
                     </Field>
                     <div className="flex gap-3">
                       <Link to="/sacola" className="btn-outline">Voltar à sacola</Link>
@@ -207,27 +207,27 @@ export function Checkout() {
                       <div className="grid gap-5 sm:grid-cols-6">
                         <div className="sm:col-span-2">
                           <Field id="cep" label="CEP" error={errors.cep}>
-                            <input {...aria('cep', errors.cep)} inputMode="numeric" className="field" autoComplete="off" value={draft.delivery.cep} onChange={(e) => setD('cep', e.target.value)} placeholder="00000-000" />
+                            <input {...aria('cep', errors.cep)} name="postal-code" inputMode="numeric" className="field" autoComplete="off" value={draft.delivery.cep} onChange={(e) => setD('cep', e.target.value)} placeholder="00000-000" />
                           </Field>
                         </div>
                         <div className="sm:col-span-4">
                           <Field id="rua" label="Rua" error={errors.street}>
-                            <input {...aria('rua', errors.street)} className="field" autoComplete="off" value={draft.delivery.street} onChange={(e) => setD('street', e.target.value)} />
+                            <input {...aria('rua', errors.street)} name="street" className="field" autoComplete="off" value={draft.delivery.street} onChange={(e) => setD('street', e.target.value)} />
                           </Field>
                         </div>
                         <div className="sm:col-span-2">
                           <Field id="numero" label="Número" error={errors.number}>
-                            <input {...aria('numero', errors.number)} className="field" autoComplete="off" value={draft.delivery.number} onChange={(e) => setD('number', e.target.value)} />
+                            <input {...aria('numero', errors.number)} name="number" className="field" autoComplete="off" value={draft.delivery.number} onChange={(e) => setD('number', e.target.value)} />
                           </Field>
                         </div>
                         <div className="sm:col-span-3">
                           <Field id="cidade" label="Cidade" error={errors.city}>
-                            <input {...aria('cidade', errors.city)} className="field" autoComplete="off" value={draft.delivery.city} onChange={(e) => setD('city', e.target.value)} />
+                            <input {...aria('cidade', errors.city)} name="city" className="field" autoComplete="off" value={draft.delivery.city} onChange={(e) => setD('city', e.target.value)} />
                           </Field>
                         </div>
                         <div className="sm:col-span-1">
                           <Field id="uf" label="UF" error={errors.uf}>
-                            <input {...aria('uf', errors.uf)} maxLength={2} className="field uppercase" autoComplete="off" value={draft.delivery.uf} onChange={(e) => setD('uf', e.target.value.toUpperCase())} />
+                            <input {...aria('uf', errors.uf)} name="state" maxLength={2} className="field uppercase" autoComplete="off" value={draft.delivery.uf} onChange={(e) => setD('uf', e.target.value.toUpperCase())} />
                           </Field>
                         </div>
                       </div>

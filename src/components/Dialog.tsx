@@ -60,7 +60,7 @@ export function Dialog({ open, onClose, title, children, className, hideTitle }:
               <X aria-hidden className="size-5" />
             </button>
           </div>
-          <div className="overflow-y-auto px-5 py-5">{children}</div>
+          <div className="overflow-y-auto overscroll-contain px-5 py-5">{children}</div>
         </div>
       )}
       <style>{'@keyframes dialog-in{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}'}</style>

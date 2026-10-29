@@ -1,5 +1,5 @@
 // Source: Motion Primitives — TextLoop (https://motion-primitives.com/docs/text-loop). MIT License, (c) ibelick.
-// Local change: renders spans instead of divs so it can sit inside a paragraph.
+// Local changes: renders spans instead of divs so it can sit inside a paragraph; optional `cycles` stops it.
 'use client';
 import { cn } from '@/lib/utils';
 import {
@@ -20,6 +20,7 @@ export type TextLoopProps = {
   onIndexChange?: (index: number) => void;
   trigger?: boolean;
   mode?: AnimatePresenceProps['mode'];
+  cycles?: number;
 };
 
 export function TextLoop({
@@ -31,6 +32,7 @@ export function TextLoop({
   onIndexChange,
   trigger = true,
   mode = 'popLayout',
+  cycles = Infinity,
 }: TextLoopProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const items = Children.toArray(children);
@@ -39,7 +41,9 @@ export function TextLoop({
     if (!trigger) return;
 
     const intervalMs = interval * 1000;
+    let steps = 0;
     const timer = setInterval(() => {
+      if (++steps >= cycles * items.length) clearInterval(timer);
       setCurrentIndex((current) => {
         const next = (current + 1) % items.length;
         onIndexChange?.(next);

@@ -18,7 +18,7 @@ import { newOrderId, resolveBag, shippingCents, snapshotItems } from './shop'
 const DATA_KEY = 'arte-nossa:demo:v1'
 const BAG_KEY = 'arte-nossa:bag:v1'
 
-export const initialData = (): DemoData => ({
+const initialData = (): DemoData => ({
   version: 1,
   products: structuredClone(seedProducts),
   orders: [],
@@ -54,7 +54,7 @@ export const isPersistent = () => persistent
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null
 const isInt = (v: unknown, min = 0) => Number.isInteger(v) && (v as number) >= min
 
-export function validateData(raw: unknown): { ok: true; data: DemoData } | { ok: false; error: string } {
+function validateData(raw: unknown): { ok: true; data: DemoData } | { ok: false; error: string } {
   if (!isObj(raw)) return { ok: false, error: 'O arquivo não contém um objeto JSON.' }
   if (raw.version !== 1) return { ok: false, error: 'Versão de dados não suportada (esperado "version": 1).' }
   if (!Array.isArray(raw.products) || !Array.isArray(raw.orders) || !Array.isArray(raw.movements))
@@ -191,7 +191,7 @@ export function adjustStock(productId: string, variantId: string, newStock: numb
 }
 
 // --- orders ---
-export interface PlaceOrderInput {
+interface PlaceOrderInput {
   orderId: string
   customer: Customer
   delivery: Delivery

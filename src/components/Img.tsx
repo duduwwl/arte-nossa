@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 const known = sizes as Record<string, { width: number; height: number }>
 const base = import.meta.env.BASE_URL
 
-export const imgUrl = (key: string, width: 640 | 1280 = 1280) =>
+const imgUrl = (key: string, width: 640 | 1280 = 1280) =>
   key.startsWith('data:') ? key : `${base}img/${key}-${width}.webp`
 
 interface ImgProps {

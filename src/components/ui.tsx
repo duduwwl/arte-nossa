@@ -88,12 +88,12 @@ export function ProductCard({ product, priority }: { product: Product; priority?
 }
 
 // --- toasts ---
-type Toast = { id: number; text: string }
+type Toast = { id: number; text: string; action?: { label: string; run: () => void } }
 let toasts: Toast[] = []
 const toastListeners = new Set<() => void>()
-export function toast(text: string) {
+export function toast(text: string, action?: Toast['action']) {
   const id = Date.now() + Math.random()
-  toasts = [...toasts, { id, text }]
+  toasts = [...toasts, { id, text, action }]
   toastListeners.forEach((l) => l())
   setTimeout(() => {
     toasts = toasts.filter((t) => t.id !== id)
@@ -120,6 +120,15 @@ export function Toaster() {
             className="pointer-events-auto max-w-md rounded-md bg-accent px-4 py-3 text-base font-semibold text-paper"
           >
             {t.text}
+            {t.action && (
+              <button
+                type="button"
+                className="ml-3 min-h-11 rounded-full px-2 font-semibold underline underline-offset-4"
+                onClick={() => (t.action!.run(), (toasts = toasts.filter((x) => x.id !== t.id)), toastListeners.forEach((l) => l()))}
+              >
+                {t.action.label}
+              </button>
+            )}
           </motion.div>
         ))}
       </AnimatePresence>

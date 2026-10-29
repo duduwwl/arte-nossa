@@ -14,14 +14,14 @@ export function parseMoneyToCents(input: string): number | null {
 }
 
 export const totalStock = (p: Product) => p.variants.reduce((n, v) => n + v.stock, 0)
-export const LOW_STOCK = 2
+const LOW_STOCK = 2
 export const isLowStock = (stock: number) => stock > 0 && stock <= LOW_STOCK
 
 const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 
 export type SortKey = 'relevancia' | 'menor-preco' | 'maior-preco' | 'nome' | 'recentes'
 
-export interface CatalogQuery {
+interface CatalogQuery {
   text?: string
   category?: string
   onlyAvailable?: boolean

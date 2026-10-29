@@ -35,6 +35,8 @@
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 6rem;
     color-scheme: dark;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
     @apply bg-paper font-sans text-ink antialiased;
